@@ -1,5 +1,5 @@
 'use strict';
-//Assign variables for DOM
+//ASSIGN VARIABLES FOR DOM
 const totalScore0 = document.getElementById('score--0');
 const totalScore1 = document.getElementById('score--1');
 const palyer1 = document.querySelector('.player--1');
@@ -8,23 +8,24 @@ const currentResult1El = document.getElementById('current--1');
 const currentResult0El = document.getElementById('current--0');
 const diceEl = document.querySelector('.dice');
 
-//Btn assignment
+//BUTTON ASSIGNMENT
 const btnRoll = document.querySelector('.btn--roll');
 const btnNew = document.querySelector('.btn--new');
 const btnHold = document.querySelector('.btn--hold');
 
-//Assign variables for functionality
-let currentScore, playing, totalScores, activePlayer;
+//ASSIGN VARIABLES FOR FUNCTIONALITY
+let currentScore, playing, totalScores, activePlayer, t, diceNum;
 
-//FUNCTIONS
-//Switch Player
+//FUNCTIONS//
+
+//SWITCH PLAYER
 function switchPlayer() {
   activePlayer = activePlayer === 1 ? 0 : 1;
   palyer0.classList.toggle('player--active');
   palyer1.classList.toggle('player--active');
 }
 
-//Reset reslut,hide dice
+//RESET RESULT, HIDE DICE.
 function reset() {
   palyer0.classList.remove('player--winner');
   palyer1.classList.remove('player--winner');
@@ -41,35 +42,68 @@ function reset() {
   palyer1.classList.remove('player--active');
 }
 
+//RENDER RANDOM DICE SYMBOL FROM ARRAY
+function changeDice() {
+  diceNum = Math.floor(Math.random() * 6);
+  diceEl.innerHTML = dices[diceNum];
+}
+// SET DICE NUMBER CHANGING INTERVAL
+function rollDice() {
+  t = setInterval(changeDice, 100);
+}
+
+function wait() {
+  return new Promise(function (t) {
+    setTimeout(t, 2000);
+  });
+}
+
 //Call reset function
 reset();
 
-//GAME START AND STOP LOGIC
+//GAME START AND STOP LOGIC//
 
-//Rolling dice function
+const dices = [
+  '&#9856;',
+  '&#9857;',
+  '&#9858;',
+  '&#9859;',
+  '&#9860;',
+  '&#9861;',
+];
+
+// ROLLS BTN FUNC
 btnRoll.addEventListener('click', function () {
   if (playing) {
-    const dice = Math.trunc(Math.random() * 6) + 1;
-    diceEl.src = `dice-${dice}.png`;
     diceEl.classList.remove('hidden');
+    diceEl.classList.add('rotate');
+    btnRoll.disabled = true;
+    rollDice();
 
-    if (dice !== 1) {
-      currentScore += dice;
-      document.getElementById(`current--${activePlayer}`).textContent =
-        currentScore;
-    } else {
-      currentScore = 0;
-      document.getElementById(`current--${activePlayer}`).textContent =
-        currentScore;
-      switchPlayer();
-    }
+    wait().then(() => {
+      clearInterval(t);
+      diceEl.classList.remove('rotate');
+      btnRoll.disabled = false;
+
+      if (diceNum !== 0) {
+        currentScore += diceNum + 1;
+        document.getElementById(`current--${activePlayer}`).textContent =
+          currentScore;
+      } else {
+        currentScore = 0;
+        document.getElementById(`current--${activePlayer}`).textContent =
+          currentScore;
+        switchPlayer();
+      }
+    });
   }
 });
 
-//Hold btn functionality
+//HOLD BTN FUNCTIONALITY
 btnHold.addEventListener('click', function () {
   if (playing) {
     totalScores[activePlayer] += currentScore;
+
     document.getElementById(`score--${activePlayer}`).textContent =
       totalScores[activePlayer];
     currentScore = 0;
@@ -87,5 +121,5 @@ btnHold.addEventListener('click', function () {
   }
 });
 
-//New game btn
+//NEW GAME BTN FUNCTIONALITY
 btnNew.addEventListener('click', reset);

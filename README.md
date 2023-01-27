@@ -1,1 +1,1 @@
-## Its all about Pig-game
+## Rolling dice game.

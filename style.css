@@ -148,15 +148,6 @@ main {
   outline: none;
 }
 
-.dice {
-  position: absolute;
-  left: 50%;
-  top: 16.5rem;
-  transform: translateX(-50%);
-  height: 10rem;
-  box-shadow: 0 2rem 5rem rgba(0, 0, 0, 0.2);
-}
-
 .player--winner {
   background-color: #4d648d8f;
 }
@@ -167,4 +158,21 @@ main {
 }
 .hidden {
   display: none;
+}
+
+#dice {
+  position: absolute;
+  top: 10rem;
+  left: 41.7rem;
+
+  font-size: 220px;
+}
+.rotate {
+  animation: diceMove 2s infinite;
+}
+
+@keyframes diceMove {
+  100% {
+    transform: rotate(360deg);
+  }
 }
